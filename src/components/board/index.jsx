@@ -23,31 +23,33 @@ export default class Board extends React.Component {
         let winnerTitle = '';
         const player = this.calcNextTurn();
         if (winner) {
-            if(winner === 'draw'){
+            if (winner === 'draw') {
                 winnerTitle = `It's a draw!`;
             } else {
                 winnerTitle = `Player ${player} is a winner!`;
             }
-            
+
         }
 
-        const currentTurn = winnerTitle === '' ? `current turn: ${turn}`: ''
-        return <>
+        const currentTurn = winnerTitle === '' ? `current turn: ${turn}` : ''
+        return <div className={'game'}>
             <h3>{currentTurn} {winnerTitle}</h3>
-            <div className={'score'}>
-                X: {scoreX} === O: {scoreO} 
+            <div className={'score-board'}>
+                <div className={'player'}>"X"<br />{scoreX}</div>
+                <div className={'score-label'}>score</div>
+                <div className={'player'}>"O"<br />{scoreO}</div>
             </div>
             <div className={'board'}>
                 {this.renderSquares()}
             </div>
             <button className={'btn'} onClick={this.handleStartGame}>Start Game</button>
-        </>
+        </div>
     }
 
-    renderSquares(){
-        const {squares} = this.state;
+    renderSquares() {
+        const { squares } = this.state;
         const winner = this.calcWinner();
-        
+
         return squares.map((square, index) => {
             const isWinner = winner && Array.isArray(winner) && winner.indexOf(index) > -1;
             return <Square winner={isWinner} key={index} value={square} onClick={() => this.handleClick(index)} />
@@ -70,11 +72,19 @@ export default class Board extends React.Component {
             this.setState({
                 squares,
                 turn: this.calcNextTurn()
+            }, () => {
+                const winner = this.calcWinner();
+                if(winner && winner !== 'draw'){
+                    this.setState(state => {
+                        turn === 'X' ? state.scoreX++ : state.scoreO++;
+                        return state;
+                    })
+                }
             })
         }
     }
 
-    calcNextTurn(){
+    calcNextTurn() {
         const { turn } = this.state;
         return turn === 'X' ? 'O' : 'X'
     }
@@ -98,7 +108,7 @@ export default class Board extends React.Component {
             }
         }
 
-        if(squares.every(x => x)){
+        if (squares.every(x => x)) {
             return 'draw';
         }
         return null;
