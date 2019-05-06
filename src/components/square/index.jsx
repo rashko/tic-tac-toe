@@ -1,14 +1,13 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import './style.scss';
 
-export default class Square extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
+export default class Square extends React.PureComponent {
+    
     render() {
-        const {value, onClick} = this.props;
-        return <div className={'square'} onClick={onClick}>{value}</div>
+        const {value, onClick, winner} = this.props;
+        const squareClass = classNames('square', {'winner': winner})
+        return <div className={squareClass} onClick={onClick}>{value}</div>
     }
 
 }

@@ -1,6 +1,19 @@
 .board {
-    width: 300px;
-    height: 300px;
-    display: flex;
-    flex-flow: row wrap;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 20px;
+}
+
+.btn {
+  border: solid 1px lightblue;
+  color: #000;
+  background: lightblue;
+  border-radius: 3px;
+  font-size: 1.6em;
+  padding: 5px 10px;
+  &:focus {
+    outline: 0;
+  }
 }

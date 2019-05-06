@@ -6,17 +6,22 @@ export default class Board extends React.Component {
     constructor(props) {
         super(props)
         this.handleStartGame = this.handleStartGame.bind(this);
+        this.calcNextTurn = this.calcNextTurn.bind(this);
+        this.renderSquares = this.renderSquares.bind(this);
+
         this.state = {
             squares: Array(9).fill(null),
-            turn: 'X'
+            turn: 'X',
+            scoreX: 0,
+            scoreO: 0
         }
     }
 
     render() {
-        const { squares, turn } = this.state;
+        const { turn, scoreX, scoreO } = this.state;
         const winner = this.calcWinner();
         let winnerTitle = '';
-        const player = turn === 'X' ? 'V' : 'X';
+        const player = this.calcNextTurn();
         if (winner) {
             if(winner === 'draw'){
                 winnerTitle = `It's a draw!`;
@@ -25,15 +30,28 @@ export default class Board extends React.Component {
             }
             
         }
+
+        const currentTurn = winnerTitle === '' ? `current turn: ${turn}`: ''
         return <>
-            <h3>{winnerTitle}</h3>
-            <div className={'board'}>
-                {squares.map((square, index) => {
-                    return <Square value={square} onClick={() => this.handleClick(index)} />
-                })}
+            <h3>{currentTurn} {winnerTitle}</h3>
+            <div className={'score'}>
+                X: {scoreX} === O: {scoreO} 
             </div>
-            <button onClick={this.handleStartGame}>Start Game</button>
+            <div className={'board'}>
+                {this.renderSquares()}
+            </div>
+            <button className={'btn'} onClick={this.handleStartGame}>Start Game</button>
         </>
+    }
+
+    renderSquares(){
+        const {squares} = this.state;
+        const winner = this.calcWinner();
+        
+        return squares.map((square, index) => {
+            const isWinner = winner && Array.isArray(winner) && winner.indexOf(index) > -1;
+            return <Square winner={isWinner} key={index} value={square} onClick={() => this.handleClick(index)} />
+        })
     }
 
     handleStartGame() {
@@ -45,14 +63,20 @@ export default class Board extends React.Component {
 
     handleClick(index) {
         const { turn } = this.state;
+        const winner = this.calcWinner();
         const squares = [...this.state.squares];
-        if (!squares[index]) {
+        if (!squares[index] && !winner) {
             squares[index] = turn;
             this.setState({
                 squares,
-                turn: turn === 'X' ? 'V' : 'X'
+                turn: this.calcNextTurn()
             })
         }
+    }
+
+    calcNextTurn(){
+        const { turn } = this.state;
+        return turn === 'X' ? 'O' : 'X'
     }
 
     calcWinner() {
@@ -70,7 +94,7 @@ export default class Board extends React.Component {
         for (let i = 0; i < combo.length; i++) {
             const [a, b, c] = combo[i];
             if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
+                return combo[i];
             }
         }
 

@@ -2,6 +2,18 @@
   border: solid 0px #ccc;
   flex-grow: 1;
   width: 30%;
-  background: #ccc;
+  height: 31%;
+  background-color: #ccc;
   margin: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+  transition: all 0.3s;
+  &:hover {
+      background-color: lightblue;
+  }
+  &.winner {
+      background-color: lightgreen;
+  }
 }
